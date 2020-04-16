@@ -6,15 +6,15 @@ Clone of the amazing Camel Crusher based on black-box analysis. The reason for d
 
 On Linux for Linux:
 
-    make -C src/reverse-camel
+    make
 
 On OSX for OSX:
 
     brew install pkg-config
-    make -C src/reverse-camel
+    make
 
 On Linux for Windows:
 
     sudo apt install mingw-w64
-    make WIN32=true CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ -C src/reverse-camel
+    make WIN32=true CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++
 
