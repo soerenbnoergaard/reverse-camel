@@ -18,6 +18,3 @@ On Linux for Windows:
     sudo apt install mingw-w64
     make WIN32=true CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ -C src/reverse-camel
 
-On Windows for Window (msys2):
-
-    make WINDOWS=true -C src/reverse-camel
