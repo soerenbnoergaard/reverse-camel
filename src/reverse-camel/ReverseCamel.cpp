@@ -124,7 +124,11 @@ const float disttube_coeffs[][4] = {
 
 START_NAMESPACE_DISTRHO
 
-#define PARAM_DISTTUBE 0
+#define NUM_PARAMS 3
+
+#define PARAM_DISTTUBE 0 // 0 to 100 (integer)
+#define PARAM_MASTERVOLUME 1 // -inf to 0 (integer/enum) x=arange(0.0, 1.1, 0.1); y=[-inf, -55, -38, -29, -22, -16, -12, -8, -5, -3, 0]
+#define PARAM_MASTERMIX 2 // 0 to 100 (integer)
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -134,7 +138,7 @@ START_NAMESPACE_DISTRHO
 class ReverseCamelPlugin : public Plugin
 {
 public:
-    ReverseCamelPlugin() : Plugin(1, 0, 0) // 1st argument: Number of parameters
+    ReverseCamelPlugin() : Plugin(NUM_PARAMS, 0, 0) // 1st argument: Number of parameters
     {
         sampleRateChanged(getSampleRate());
     }
@@ -216,6 +220,7 @@ protected:
     */
     void initParameter(uint32_t index, Parameter& parameter) override
     {
+
         switch (index) {
         case PARAM_DISTTUBE:
             parameter.hints  = kParameterIsAutomable | kParameterIsInteger;
@@ -227,9 +232,32 @@ protected:
             parameter.ranges.max = 100.0f;
             break;
 
+        case PARAM_MASTERVOLUME:
+            parameter.hints  = kParameterIsAutomable | kParameterIsInteger | kParameterIsLogarithmic;
+            parameter.name   = "MasterVolume";
+            parameter.symbol = "MasterVolume";
+            parameter.unit   = "dB";
+            parameter.ranges.def = 0.0f;
+            parameter.ranges.min = -51.0f;
+            parameter.ranges.max = 0.0f;
+            break;
+
+        case PARAM_MASTERMIX:
+            parameter.hints  = kParameterIsAutomable | kParameterIsInteger;
+            parameter.name   = "MasterMix";
+            parameter.symbol = "MasterMix";
+            parameter.unit   = "%";
+            parameter.ranges.def = 100.0f;
+            parameter.ranges.min = 0.0f;
+            parameter.ranges.max = 100.0f;
+            break;
+
         default:
             break;
         }
+
+        // Set the default parameter values
+        setParameterValue(index, parameter.ranges.def);
     }
 
    /* --------------------------------------------------------------------------------------------------------
@@ -243,7 +271,15 @@ protected:
     {
         switch (index) {
         case PARAM_DISTTUBE:
-            return disttube;
+            return param_disttube;
+            break;
+
+        case PARAM_MASTERVOLUME:
+            return param_mastervolume;
+            break;
+
+        case PARAM_MASTERMIX:
+            return param_mastermix;
             break;
 
         default:
@@ -262,7 +298,21 @@ protected:
     {
         switch (index) {
         case PARAM_DISTTUBE:
-            disttube = value;
+            param_disttube = value;
+            break;
+        case PARAM_MASTERVOLUME:
+            param_mastervolume = value;
+            if (value < -50) {
+                param_mastervolume_lin = 0.0;
+            }
+            else {
+                param_mastervolume_lin = pow(10.0, value/20.0);
+            }
+            break;
+        case PARAM_MASTERMIX:
+            param_mastermix = value;
+            param_mastermix_wet = value/100.0;
+            param_mastermix_dry = 1.0 - param_mastermix_wet;
             break;
         default:
             break;
@@ -282,18 +332,19 @@ protected:
         float *y;
         float s;
 
-        float p0 = disttube_coeffs[(int)disttube][0];
-        float p1 = disttube_coeffs[(int)disttube][1];
-        float p2 = disttube_coeffs[(int)disttube][2];
-        float p3 = disttube_coeffs[(int)disttube][3];
+        float p0 = disttube_coeffs[(int)param_disttube][0];
+        float p1 = disttube_coeffs[(int)param_disttube][1];
+        float p2 = disttube_coeffs[(int)param_disttube][2];
+        float p3 = disttube_coeffs[(int)param_disttube][3];
 
         for (uint32_t ch = 0; ch < 2; ch++) {
             x = inputs[ch];
             y = outputs[ch];
 
             for (uint32_t n = 0; n < frames; n++) {
-                s = p0 * x[n] * 32768;
+                // Apply distortion (calculated in int16-values)
 
+                s = p0 * x[n] * 32768;
                 if (s < -19400) {
                     y[n] = p1*s*s + p2*s + p3;
                 }
@@ -303,8 +354,13 @@ protected:
                 else {
                     y[n] = s;
                 }
-
                 y[n] /= 32768;
+
+                // Mix wet and dry signal
+                y[n] = param_mastermix_wet*y[n] + param_mastermix_dry*x[n];
+
+                // Apply master volume
+                y[n] *= param_mastervolume_lin;
             }
         }
     }
@@ -324,7 +380,12 @@ protected:
 
 private:
 
-    float disttube;
+    float param_disttube;
+    float param_mastervolume;
+    float param_mastervolume_lin;
+    float param_mastermix;
+    float param_mastermix_wet;
+    float param_mastermix_dry;
 
    /**
       Set our plugin class as non-copyable and add a leak detector just in case.
