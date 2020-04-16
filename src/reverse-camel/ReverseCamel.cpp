@@ -122,13 +122,120 @@ const float disttube_coeffs[][4] = {
     { 4.99996, 0.0206626, 0.206618, -0.483468 }
 };
 
+#define DISTMECH_COEFFS_LENGTH 101
+
+const float distmech_coeffs[][3] = {
+    { 1, 1.00007, 5.38307e-05 },
+    { 1.12, 0.675717, -0.24321 },
+    { 1.2, 0.55556, -0.333334 },
+    { 1.30236, 0.452608, -0.410546 },
+    { 1.41369, 0.376696, -0.467477 },
+    { 1.51623, 0.326275, -0.505295 },
+    { 1.61584, 0.28874, -0.533446 },
+    { 1.70373, 0.262138, -0.553396 },
+    { 1.80626, 0.236686, -0.572485 },
+    { 1.9088, 0.215743, -0.588193 },
+    { 2.02599, 0.195928, -0.603055 },
+    { 2.11975, 0.182516, -0.613115 },
+    { 2.20763, 0.171514, -0.621364 },
+    { 2.32189, 0.159046, -0.630716 },
+    { 2.41269, 0.150358, -0.637232 },
+    { 2.5211, 0.141157, -0.644133 },
+    { 2.62071, 0.133641, -0.64977 },
+    { 2.72032, 0.126885, -0.654837 },
+    { 2.80821, 0.121465, -0.658901 },
+    { 2.93126, 0.114616, -0.664037 },
+    { 3.03673, 0.109328, -0.668004 },
+    { 3.11583, 0.105672, -0.670745 },
+    { 3.23887, 0.100448, -0.674664 },
+    { 3.34141, 0.0964718, -0.677648 },
+    { 3.42636, 0.0934101, -0.679946 },
+    { 3.50841, 0.0906326, -0.682026 },
+    { 3.62559, 0.0869398, -0.684795 },
+    { 3.734, 0.0837818, -0.687163 },
+    { 3.81898, 0.0814621, -0.688902 },
+    { 3.93322, 0.0785371, -0.691097 },
+    { 4.02405, 0.0763591, -0.69273 },
+    { 4.11195, 0.0743633, -0.694226 },
+    { 4.22327, 0.0719783, -0.696017 },
+    { 4.31119, 0.0702018, -0.697349 },
+    { 4.39613, 0.0685669, -0.698574 },
+    { 4.52506, 0.0662241, -0.700333 },
+    { 4.60123, 0.0649145, -0.701315 },
+    { 4.7301, 0.0628128, -0.70289 },
+    { 4.82973, 0.0612786, -0.704042 },
+    { 4.91472, 0.0600287, -0.704977 },
+    { 5.03483, 0.0583461, -0.706241 },
+    { 5.111, 0.057327, -0.707004 },
+    { 5.20766, 0.0560838, -0.707937 },
+    { 5.3219, 0.054682, -0.708989 },
+    { 5.42446, 0.0534826, -0.709888 },
+    { 5.52996, 0.0523023, -0.710773 },
+    { 5.6149, 0.0513884, -0.711459 },
+    { 5.7145, 0.0503572, -0.712234 },
+    { 5.81995, 0.0493098, -0.713019 },
+    { 5.91957, 0.0483596, -0.713732 },
+    { 6.01038, 0.0475253, -0.714357 },
+    { 6.11748, 0.0465777, -0.715065 },
+    { 6.24698, 0.0454801, -0.71589 },
+    { 6.32703, 0.0448269, -0.716381 },
+    { 6.42937, 0.0440193, -0.716985 },
+    { 6.54071, 0.0431726, -0.717621 },
+    { 6.64323, 0.0424222, -0.718183 },
+    { 6.74284, 0.041717, -0.718713 },
+    { 6.83078, 0.0411133, -0.719165 },
+    { 6.93335, 0.0404314, -0.719676 },
+    { 7.03587, 0.0397722, -0.720171 },
+    { 7.15305, 0.039044, -0.720718 },
+    { 7.24686, 0.0384808, -0.721138 },
+    { 7.33472, 0.0379667, -0.721526 },
+    { 7.44901, 0.0373186, -0.722012 },
+    { 7.53979, 0.0368203, -0.722385 },
+    { 7.64821, 0.0362414, -0.72282 },
+    { 7.74782, 0.0357261, -0.723204 },
+    { 7.84747, 0.0352244, -0.723581 },
+    { 7.93537, 0.0347936, -0.723904 },
+    { 8.05842, 0.0342075, -0.724344 },
+    { 8.16382, 0.0337213, -0.724709 },
+    { 8.24296, 0.0333648, -0.724977 },
+    { 8.36603, 0.0328255, -0.725382 },
+    { 8.46851, 0.03239, -0.725708 },
+    { 8.55343, 0.0320374, -0.725972 },
+    { 8.63534, 0.0317047, -0.726221 },
+    { 8.75261, 0.0312399, -0.72657 },
+    { 8.86101, 0.0308222, -0.726885 },
+    { 8.94599, 0.0305027, -0.727124 },
+    { 9.06026, 0.0300832, -0.727439 },
+    { 9.15105, 0.0297588, -0.72768 },
+    { 9.239, 0.0294501, -0.727913 },
+    { 9.35036, 0.0290686, -0.728199 },
+    { 9.4382, 0.0287748, -0.728419 },
+    { 9.52313, 0.028496, -0.728629 },
+    { 9.65214, 0.0280834, -0.728938 },
+    { 9.7283, 0.0278449, -0.729117 },
+    { 9.85728, 0.0274509, -0.729411 },
+    { 9.95689, 0.0271536, -0.729635 },
+    { 10.0418, 0.0269051, -0.729823 },
+    { 10.1619, 0.0265621, -0.730079 },
+    { 10.2381, 0.026349, -0.730239 },
+    { 10.3348, 0.0260833, -0.730437 },
+    { 10.449, 0.0257762, -0.730668 },
+    { 10.5515, 0.0255063, -0.730871 },
+    { 10.6569, 0.0252351, -0.731074 },
+    { 10.7419, 0.0250203, -0.731236 },
+    { 10.8415, 0.024773, -0.731422 },
+    { 10.947, 0.0245172, -0.731613 },
+    { 11.0001, 0.0243904, -0.731707 }
+};
+
 START_NAMESPACE_DISTRHO
 
-#define NUM_PARAMS 3
+#define NUM_PARAMS 4
 
 #define PARAM_DISTTUBE 0 // 0 to 100 (integer)
-#define PARAM_MASTERVOLUME 1 // -inf to 0 (integer/enum) x=arange(0.0, 1.1, 0.1); y=[-inf, -55, -38, -29, -22, -16, -12, -8, -5, -3, 0]
-#define PARAM_MASTERMIX 2 // 0 to 100 (integer)
+#define PARAM_DISTMECH 1 // 0 to 100 (integer)
+#define PARAM_MASTERVOLUME 2 // -inf to 0 (integer/enum) x=arange(0.0, 1.1, 0.1); y=[-inf, -55, -38, -29, -22, -16, -12, -8, -5, -3, 0]
+#define PARAM_MASTERMIX 3 // 0 to 100 (integer)
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -232,6 +339,16 @@ protected:
             parameter.ranges.max = 100.0f;
             break;
 
+        case PARAM_DISTMECH:
+            parameter.hints  = kParameterIsAutomable | kParameterIsInteger;
+            parameter.name   = "DistMech";
+            parameter.symbol = "DistMech";
+            parameter.unit   = "%";
+            parameter.ranges.def = 0.0f;
+            parameter.ranges.min = 0.0f;
+            parameter.ranges.max = 100.0f;
+            break;
+
         case PARAM_MASTERVOLUME:
             parameter.hints  = kParameterIsAutomable | kParameterIsInteger | kParameterIsLogarithmic;
             parameter.name   = "MasterVolume";
@@ -274,6 +391,10 @@ protected:
             return param_disttube;
             break;
 
+        case PARAM_DISTMECH:
+            return param_distmech;
+            break;
+
         case PARAM_MASTERVOLUME:
             return param_mastervolume;
             break;
@@ -300,6 +421,11 @@ protected:
         case PARAM_DISTTUBE:
             param_disttube = value;
             break;
+
+        case PARAM_DISTMECH:
+            param_distmech = value;
+            break;
+
         case PARAM_MASTERVOLUME:
             param_mastervolume = value;
             if (value < -50) {
@@ -309,11 +435,13 @@ protected:
                 param_mastervolume_lin = pow(10.0, value/20.0);
             }
             break;
+
         case PARAM_MASTERMIX:
             param_mastermix = value;
             param_mastermix_wet = value/100.0;
             param_mastermix_dry = 1.0 - param_mastermix_wet;
             break;
+
         default:
             break;
         }
@@ -332,23 +460,39 @@ protected:
         float *y;
         float s;
 
-        float p0 = disttube_coeffs[(int)param_disttube][0];
-        float p1 = disttube_coeffs[(int)param_disttube][1];
-        float p2 = disttube_coeffs[(int)param_disttube][2];
-        float p3 = disttube_coeffs[(int)param_disttube][3];
+        float p0_0 = disttube_coeffs[(int)param_disttube][0];
+        float p0_1 = disttube_coeffs[(int)param_disttube][1];
+        float p0_2 = disttube_coeffs[(int)param_disttube][2];
+        float p0_3 = disttube_coeffs[(int)param_disttube][3];
+
+        float p1_0 = distmech_coeffs[(int)param_distmech][0];
+        float p1_1 = distmech_coeffs[(int)param_distmech][1];
+        float p1_2 = distmech_coeffs[(int)param_distmech][2];
 
         for (uint32_t ch = 0; ch < 2; ch++) {
             x = inputs[ch];
             y = outputs[ch];
 
             for (uint32_t n = 0; n < frames; n++) {
-                // Apply distortion
-                s = p0 * x[n];
+                // Apply DistTube distortion
+                s = p0_0 * x[n];
                 if (s < -0.6) {
-                    y[n] = p1*s*s + p2*s + p3;
+                    y[n] = p0_1*s*s + p0_2*s + p0_3;
                 }
                 else if (s > 0.6) {
-                    y[n] = (-p1)*s*s + p2*s + (-p3);
+                    y[n] = (-p0_1)*s*s + p0_2*s + (-p0_3);
+                }
+                else {
+                    y[n] = s;
+                }
+
+                // Apply DistMech distortion
+                s = p1_0*y[n];
+                if (s < -0.75) {
+                    y[n] = p1_1*s + p1_2;
+                }
+                else if (s > 0.75) {
+                    y[n] = p1_1*s - p1_2;
                 }
                 else {
                     y[n] = s;
@@ -379,6 +523,7 @@ protected:
 private:
 
     float param_disttube;
+    float param_distmech;
     float param_mastervolume;
     float param_mastervolume_lin;
     float param_mastermix;
