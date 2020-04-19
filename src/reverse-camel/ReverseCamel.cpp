@@ -456,8 +456,8 @@ protected:
     */
     void run(const float** inputs, float** outputs, uint32_t frames) override
     {
-        const float *x;
-        float *y;
+        float x;
+        float y;
         float s;
 
         float p0_0 = disttube_coeffs[(int)param_disttube][0];
@@ -470,39 +470,42 @@ protected:
         float p1_2 = distmech_coeffs[(int)param_distmech][2];
 
         for (uint32_t ch = 0; ch < 2; ch++) {
-            x = inputs[ch];
-            y = outputs[ch];
-
             for (uint32_t n = 0; n < frames; n++) {
+                x = inputs[ch][n];
+                y = 0.0;
+
                 // Apply DistTube distortion
-                s = p0_0 * x[n];
+                s = p0_0 * x;
                 if (s < -0.6) {
-                    y[n] = p0_1*s*s + p0_2*s + p0_3;
+                    y = p0_1*s*s + p0_2*s + p0_3;
                 }
                 else if (s > 0.6) {
-                    y[n] = (-p0_1)*s*s + p0_2*s + (-p0_3);
+                    y = (-p0_1)*s*s + p0_2*s + (-p0_3);
                 }
                 else {
-                    y[n] = s;
+                    y = s;
                 }
 
                 // Apply DistMech distortion
-                s = p1_0*y[n];
+                s = p1_0*y;
                 if (s < -0.75) {
-                    y[n] = p1_1*s + p1_2;
+                    y = p1_1*s + p1_2;
                 }
                 else if (s > 0.75) {
-                    y[n] = p1_1*s - p1_2;
+                    y = p1_1*s - p1_2;
                 }
                 else {
-                    y[n] = s;
+                    y = s;
                 }
 
                 // Mix wet and dry signal
-                y[n] = param_mastermix_wet*y[n] + param_mastermix_dry*x[n];
+                y = param_mastermix_wet*y + param_mastermix_dry*x;
 
                 // Apply master volume
-                y[n] *= param_mastervolume_lin;
+                y *= param_mastervolume_lin;
+
+                // Store the output
+                outputs[ch][n] = y;
             }
         }
     }
