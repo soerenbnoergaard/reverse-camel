@@ -2,3 +2,4 @@ bin
 build
 *.d
 .ipynb_checkpoints/
+*.zip
