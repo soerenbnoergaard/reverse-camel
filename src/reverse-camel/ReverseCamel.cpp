@@ -330,7 +330,7 @@ protected:
 
         switch (index) {
         case PARAM_DISTTUBE:
-            parameter.hints  = kParameterIsAutomable | kParameterIsInteger;
+            parameter.hints  = kParameterIsAutomable;
             parameter.name   = "DistTube";
             parameter.symbol = "DistTube";
             parameter.unit   = "%";
@@ -340,7 +340,7 @@ protected:
             break;
 
         case PARAM_DISTMECH:
-            parameter.hints  = kParameterIsAutomable | kParameterIsInteger;
+            parameter.hints  = kParameterIsAutomable;
             parameter.name   = "DistMech";
             parameter.symbol = "DistMech";
             parameter.unit   = "%";
@@ -350,7 +350,7 @@ protected:
             break;
 
         case PARAM_MASTERVOLUME:
-            parameter.hints  = kParameterIsAutomable | kParameterIsInteger | kParameterIsLogarithmic;
+            parameter.hints  = kParameterIsAutomable;
             parameter.name   = "MasterVolume";
             parameter.symbol = "MasterVolume";
             parameter.unit   = "dB";
@@ -360,7 +360,7 @@ protected:
             break;
 
         case PARAM_MASTERMIX:
-            parameter.hints  = kParameterIsAutomable | kParameterIsInteger;
+            parameter.hints  = kParameterIsAutomable;
             parameter.name   = "MasterMix";
             parameter.symbol = "MasterMix";
             parameter.unit   = "%";
@@ -460,14 +460,22 @@ protected:
         float y;
         float s;
 
-        float p0_0 = disttube_coeffs[(int)param_disttube][0];
-        float p0_1 = disttube_coeffs[(int)param_disttube][1];
-        float p0_2 = disttube_coeffs[(int)param_disttube][2];
-        float p0_3 = disttube_coeffs[(int)param_disttube][3];
+        int disttube_idx = (int)param_disttube;
+        int distmech_idx = (int)param_distmech;
 
-        float p1_0 = distmech_coeffs[(int)param_distmech][0];
-        float p1_1 = distmech_coeffs[(int)param_distmech][1];
-        float p1_2 = distmech_coeffs[(int)param_distmech][2];
+#define LIMIT_RANGE(x, xmin, xmax) ((x) < (xmin)) ? (xmin) : ((x) > (xmax)) ? (xmax) : (x)
+
+        disttube_idx = LIMIT_RANGE(disttube_idx, 0, 100);
+        distmech_idx = LIMIT_RANGE(distmech_idx, 0, 100);
+
+        float p0_0 = disttube_coeffs[disttube_idx][0];
+        float p0_1 = disttube_coeffs[disttube_idx][1];
+        float p0_2 = disttube_coeffs[disttube_idx][2];
+        float p0_3 = disttube_coeffs[disttube_idx][3];
+
+        float p1_0 = distmech_coeffs[distmech_idx][0];
+        float p1_1 = distmech_coeffs[distmech_idx][1];
+        float p1_2 = distmech_coeffs[distmech_idx][2];
 
         for (uint32_t ch = 0; ch < 2; ch++) {
             for (uint32_t n = 0; n < frames; n++) {
