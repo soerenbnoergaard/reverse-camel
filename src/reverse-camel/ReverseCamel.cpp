@@ -305,7 +305,7 @@ protected:
     */
     uint32_t getVersion() const override
     {
-        return d_version(0, 0, 0);
+        return d_version(0, 0, 4);
     }
 
    /**
